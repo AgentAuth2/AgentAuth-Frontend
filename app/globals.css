@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Geist';
+  src: local('Courier New'), monospace;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+  * {
+    border-color: #262626;
+  }
+  body {
+    @apply bg-background text-on-background antialiased;
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 24px;
+  }
+}
+
+@layer utilities {
+  .flow-line {
+    background: linear-gradient(90deg, #00e5ff 0%, rgba(0, 229, 255, 0.2) 100%);
+    background-size: 200% 100%;
+    animation: flow-anim 2s linear infinite;
+  }
+
+  .dot-grid {
+    background-image: radial-gradient(circle at 20px 20px, #262626 2px, transparent 0);
+    background-size: 40px 40px;
+  }
+}
