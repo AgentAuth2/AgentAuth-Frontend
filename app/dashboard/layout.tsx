@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   Shield, LayoutDashboard, Cpu, Lock, ScrollText,
-  Settings, HelpCircle, FileText, Menu, X, Plus
+  Settings, HelpCircle, FileText, Menu, X, Plus, User, LogOut, Terminal, Heart, Building
 } from 'lucide-react';
 import { RegisterAgentModal } from '@/components/dashboard/register-agent-modal';
 
@@ -13,16 +13,78 @@ const NAV_ITEMS = [
   { href: '/dashboard', label: 'Gateway Overview', icon: LayoutDashboard },
   { href: '/dashboard/agents', label: 'Agent Registry', icon: Cpu },
   { href: '/dashboard/scopes', label: 'Role & Scope Engine', icon: Lock },
+  { href: '/dashboard/gateway/console', label: 'Test Console', icon: Terminal },
   { href: '/dashboard/audit', label: 'Audit Logs', icon: ScrollText },
+  { href: '/dashboard/health', label: 'System Health', icon: Heart },
+  { href: '/dashboard/admin/orgs', label: 'Tenants Directory', icon: Building },
   { href: '/dashboard/settings', label: 'Admin Config', icon: Settings },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [registerOpen, setRegisterOpen] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      router.push('/login');
+      return;
+    }
+
+    const BASE_URL = typeof window !== 'undefined' && window.location.hostname !== 'localhost'
+      ? `https://${window.location.host.replace('3000', '8000')}`
+      : 'http://localhost:8000';
+
+    fetch(`${BASE_URL}/v1/auth/me`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+      .then(res => {
+        if (!res.ok) throw new Error();
+        return res.json();
+      })
+      .then(data => {
+        setUserEmail(data.email);
+        setLoading(false);
+      })
+      .catch(() => {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('user_sub');
+        localStorage.removeItem('user_org');
+        router.push('/login');
+      });
+  }, [router]);
+
+  const handleLogout = () => {
+    const token = localStorage.getItem('access_token');
+    const BASE_URL = typeof window !== 'undefined' && window.location.hostname !== 'localhost'
+      ? `https://${window.location.host.replace('3000', '8000')}`
+      : 'http://localhost:8000';
+
+    fetch(`${BASE_URL}/v1/auth/logout`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` }
+    }).catch(() => {});
+
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('user_sub');
+    localStorage.removeItem('user_org');
+    router.push('/login');
+  };
 
   const isActive = (href: string) => pathname === href;
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center text-primary-container">
+        <div className="w-5 h-5 border-2 border-primary-container border-t-transparent rounded-full animate-spin" />
+        <span className="ml-xs text-label-caps font-label-caps">Checking Session...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -78,15 +140,27 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <Plus className="w-4 h-4" />
             Register New Agent
           </button>
+          
           <div className="border-t border-panel-border pt-sm flex flex-col gap-xs">
-            <Link href="/contact" className="flex items-center gap-sm px-sm py-xs text-on-surface-variant hover:text-on-surface transition-colors">
-              <HelpCircle className="w-[18px] h-[18px]" />
-              <span className="text-body-sm font-body-sm">Support</span>
+            {userEmail && (
+              <div className="px-sm py-xs flex items-center gap-xs text-body-sm text-on-surface-variant">
+                <div className="w-5 h-5 rounded-full bg-primary-container/20 text-primary-container flex items-center justify-center text-xs font-semibold uppercase">
+                  {userEmail.charAt(0)}
+                </div>
+                <span className="truncate max-w-[150px]">{userEmail}</span>
+              </div>
+            )}
+            <Link href="/profile" className="flex items-center gap-sm px-sm py-xs text-on-surface-variant hover:text-on-surface transition-colors">
+              <User className="w-[18px] h-[18px]" />
+              <span className="text-body-sm font-body-sm">My Profile</span>
             </Link>
-            <Link href="/" className="flex items-center gap-sm px-sm py-xs text-on-surface-variant hover:text-on-surface transition-colors">
-              <FileText className="w-[18px] h-[18px]" />
-              <span className="text-body-sm font-body-sm">Documentation</span>
-            </Link>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-sm px-sm py-xs text-error hover:bg-error/10 rounded-lg text-left transition-colors"
+            >
+              <LogOut className="w-[18px] h-[18px]" />
+              <span className="text-body-sm font-body-sm">Sign Out</span>
+            </button>
           </div>
         </div>
       </aside>

@@ -1,10 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { api, AuditSummary, AuditLogEntry } from '@/lib/mock-api';
 import { Cpu, Zap, Shield, Lock, CheckCircle, Download } from 'lucide-react';
 
 export default function GatewayOverview() {
+  const router = useRouter();
   const [summary, setSummary] = useState<AuditSummary | null>(null);
   const [logs, setLogs] = useState<AuditLogEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -110,7 +112,11 @@ export default function GatewayOverview() {
             </thead>
             <tbody className="text-body-sm font-body-sm text-on-surface">
               {logs.map((log, i) => (
-                <tr key={i} className="border-b border-panel-border hover:bg-row-hover transition-colors">
+                <tr
+                  key={i}
+                  onClick={() => router.push(`/dashboard/audit/${log.id}`)}
+                  className="border-b border-panel-border hover:bg-row-hover transition-colors cursor-pointer"
+                >
                   <td className="p-sm font-code-sm text-outline-variant whitespace-nowrap">{log.created_at}</td>
                   <td className="p-sm font-code-sm text-primary-container">{log.agent_id}</td>
                   <td className="p-sm font-code-sm">{log.tool_name}</td>

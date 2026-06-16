@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { api, Agent } from '@/lib/mock-api';
 import { RegisterAgentModal } from '@/components/dashboard/register-agent-modal';
 import { Cpu, Plus, Ban, CheckCircle, XCircle, RefreshCw } from 'lucide-react';
@@ -41,13 +42,13 @@ export default function AgentRegistryPage() {
           <h2 className="text-headline-lg font-headline-lg text-on-surface">Agent Registry</h2>
           <p className="text-body-md font-body-md text-on-surface-variant mt-1">Manage agent identities and token revocation.</p>
         </div>
-        <button
-          onClick={() => setRegisterOpen(true)}
+        <Link
+          href="/dashboard/agents/new"
           className="bg-primary-container text-on-primary font-body-sm text-body-sm font-semibold px-lg py-2 rounded-lg hover:bg-primary-fixed-dim transition-colors flex items-center gap-xs"
         >
           <Plus className="w-4 h-4" />
           Register Agent
-        </button>
+        </Link>
       </header>
 
       <section className="bg-surface border border-panel-border rounded-xl overflow-hidden">
@@ -72,8 +73,16 @@ export default function AgentRegistryPage() {
             <tbody className="text-body-sm font-body-sm text-on-surface">
               {agents.map(agent => (
                 <tr key={agent.agent_id} className="border-b border-panel-border hover:bg-row-hover transition-colors">
-                  <td className="p-sm font-code-sm text-primary-container">{agent.agent_id}</td>
-                  <td className="p-sm font-code-sm">{agent.name}</td>
+                  <td className="p-sm font-code-sm text-primary-container">
+                    <Link href={`/dashboard/agents/${agent.agent_id}`} className="hover:underline">
+                      {agent.agent_id}
+                    </Link>
+                  </td>
+                  <td className="p-sm font-code-sm">
+                    <Link href={`/dashboard/agents/${agent.agent_id}`} className="hover:underline">
+                      {agent.name}
+                    </Link>
+                  </td>
                   <td className="p-sm">
                     <span className={`inline-flex items-center gap-xs px-2 py-1 rounded text-label-caps font-label-caps border ${
                       agent.is_active

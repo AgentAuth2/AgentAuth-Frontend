@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { api, Scope, Role } from '@/lib/mock-api';
-import { Lock, Shield, ChevronRight } from 'lucide-react';
+import { Lock, Shield, ChevronRight, Plus } from 'lucide-react';
 
 export default function ScopesPage() {
   const [scopes, setScopes] = useState<Scope[]>([]);
@@ -64,9 +65,18 @@ export default function ScopesPage() {
         <section className="bg-surface border border-panel-border rounded-xl overflow-hidden">
           <div className="p-sm border-b border-panel-border flex justify-between items-center bg-surface-container-lowest">
             <h3 className="text-headline-md font-headline-md text-on-surface">Defined Scopes</h3>
-            <div className="flex items-center gap-xs text-label-caps font-label-caps text-on-surface-variant">
-              <Lock className="w-4 h-4" />
-              {scopes.length} scopes
+            <div className="flex items-center gap-sm">
+              <Link
+                href="/dashboard/scopes/new"
+                className="bg-primary-container/10 border border-primary-container/20 text-primary-container font-body-sm text-body-sm font-semibold px-sm py-1 rounded hover:bg-primary-container/20 transition-colors flex items-center gap-xs"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                Create Scope
+              </Link>
+              <div className="flex items-center gap-xs text-label-caps font-label-caps text-on-surface-variant">
+                <Lock className="w-4 h-4" />
+                {scopes.length} scopes
+              </div>
             </div>
           </div>
           <div className="divide-y divide-panel-border">
@@ -94,8 +104,15 @@ export default function ScopesPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-md">
           {/* Roles list */}
           <section className="bg-surface border border-panel-border rounded-xl overflow-hidden">
-            <div className="p-sm border-b border-panel-border bg-surface-container-lowest">
+            <div className="p-sm border-b border-panel-border bg-surface-container-lowest flex justify-between items-center">
               <h3 className="text-headline-md font-headline-md text-on-surface">Roles</h3>
+              <Link
+                href="/dashboard/roles/new"
+                className="bg-primary-container/10 border border-primary-container/20 text-primary-container font-body-sm text-body-sm font-semibold px-sm py-1 rounded hover:bg-primary-container/20 transition-colors flex items-center gap-xs"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                Create Role
+              </Link>
             </div>
             <div className="divide-y divide-panel-border">
               {roles.map(role => (
@@ -121,10 +138,18 @@ export default function ScopesPage() {
 
           {/* Role scopes */}
           <section className="bg-surface border border-panel-border rounded-xl overflow-hidden">
-            <div className="p-sm border-b border-panel-border bg-surface-container-lowest">
+            <div className="p-sm border-b border-panel-border bg-surface-container-lowest flex justify-between items-center">
               <h3 className="text-headline-md font-headline-md text-on-surface">
                 {selectedRoleData ? `Scopes for ${selectedRoleData.name}` : 'Select a Role'}
               </h3>
+              {selectedRoleData && (
+                <Link
+                  href={`/dashboard/roles/${selectedRoleData.role_id}`}
+                  className="text-body-sm text-primary-container hover:text-primary-fixed-dim transition-colors font-semibold"
+                >
+                  Manage Role Scopes
+                </Link>
+              )}
             </div>
             {selectedRoleData ? (
               <div className="divide-y divide-panel-border">

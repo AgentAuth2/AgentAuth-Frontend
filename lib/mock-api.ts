@@ -19,6 +19,7 @@ export interface Role {
 }
 
 export interface AuditLogEntry {
+  id: string;
   created_at: string;
   agent_id: string;
   tool_name: string;
@@ -39,129 +40,238 @@ export interface AdminConfig {
   ownership_mode: 'claims' | 'assertion';
 }
 
-const MOCK_AGENTS: Agent[] = [
-  { agent_id: 'agt_9f8b7c6a', name: 'AI-Support-Worker-01', is_active: true, created_at: '2024-01-15T10:30:00Z' },
-  { agent_id: 'agt_2x4d5e9p', name: 'Billing-Query-Agent', is_active: true, created_at: '2024-02-20T14:00:00Z' },
-  { agent_id: 'agt_7k3m1n8q', name: 'Admin-Role-Manager', is_active: false, created_at: '2024-03-01T09:15:00Z' },
-  { agent_id: 'agt_4v9c2j5r', name: 'Subscription-Lister', is_active: true, created_at: '2024-03-10T16:45:00Z' },
-  { agent_id: 'agt_1h6f8t3w', name: 'Data-Export-Agent', is_active: true, created_at: '2024-03-15T11:20:00Z' },
-];
+const BASE_URL = typeof window !== 'undefined' && window.location.hostname !== 'localhost'
+  ? `https://${window.location.host.replace('3000', '8000')}`
+  : 'http://localhost:8000';
 
-const MOCK_SCOPES: Scope[] = [
-  { scope_id: 'scp_01', name: 'tool:get_order_details', description: 'Read order details for a specific order ID' },
-  { scope_id: 'scp_02', name: 'tool:fetch_user_billing', description: 'Fetch billing information for authenticated user' },
-  { scope_id: 'scp_03', name: 'tool:mutate_admin_roles', description: 'Modify admin role assignments' },
-  { scope_id: 'scp_04', name: 'tool:list_active_subscriptions', description: 'List all active subscriptions for user' },
-  { scope_id: 'scp_05', name: 'tool:export_user_data', description: 'Export user data in compliance format' },
-  { scope_id: 'scp_06', name: 'tool:delete_user_account', description: 'Delete user account and associated data' },
-  { scope_id: 'scp_07', name: 'tool:read_analytics', description: 'Read analytics data for dashboards' },
-  { scope_id: 'scp_08', name: 'tool:update_payment_method', description: 'Update payment method on file' },
-];
+async function apiFetch(url: string, options: RequestInit = {}) {
+  const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
+  const headers = new Headers(options.headers || {});
+  
+  if (token && !headers.has('Authorization')) {
+    headers.set('Authorization', `Bearer ${token}`);
+  }
+  
+  if (!headers.has('Content-Type') && !(options.body instanceof FormData)) {
+    headers.set('Content-Type', 'application/json');
+  }
 
-const MOCK_ROLES: Role[] = [
-  { role_id: 'rol_01', name: 'support-agent', description: 'Customer support operations', scopes: ['tool:get_order_details', 'tool:fetch_user_billing', 'tool:list_active_subscriptions'] },
-  { role_id: 'rol_02', name: 'admin-agent', description: 'Administrative operations', scopes: ['tool:mutate_admin_roles', 'tool:read_analytics'] },
-  { role_id: 'rol_03', name: 'billing-agent', description: 'Billing and payment operations', scopes: ['tool:fetch_user_billing', 'tool:update_payment_method', 'tool:list_active_subscriptions'] },
-  { role_id: 'rol_04', name: 'compliance-agent', description: 'Data compliance operations', scopes: ['tool:export_user_data', 'tool:delete_user_account'] },
-];
+  const response = await fetch(`${BASE_URL}${url}`, {
+    ...options,
+    headers,
+  });
 
-const MOCK_AUDIT_LOGS: AuditLogEntry[] = [
-  { created_at: '2024-10-27 14:32:01.045', agent_id: 'agt_9f8b7c6a', tool_name: 'fetch_user_billing', params_hash: '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', decision: 'ALLOW', latency_ms: 4.1 },
-  { created_at: '2024-10-27 14:31:58.912', agent_id: 'agt_2x4d5e9p', tool_name: 'mutate_admin_roles', params_hash: '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', decision: 'DENY', latency_ms: 1.2 },
-  { created_at: '2024-10-27 14:31:45.330', agent_id: 'agt_9f8b7c6a', tool_name: 'list_active_subscriptions', params_hash: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', decision: 'ALLOW', latency_ms: 5.8 },
-  { created_at: '2024-10-27 14:30:22.110', agent_id: 'agt_4v9c2j5r', tool_name: 'get_order_details', params_hash: 'a7ffc6f8bf1ed76651c14756a061d662f580ff4de43b49fa82d80a4b80f8434a', decision: 'ALLOW', latency_ms: 3.2 },
-  { created_at: '2024-10-27 14:29:18.778', agent_id: 'agt_1h6f8t3w', tool_name: 'export_user_data', params_hash: '2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824', decision: 'ALLOW', latency_ms: 6.4 },
-  { created_at: '2024-10-27 14:28:55.421', agent_id: 'agt_2x4d5e9p', tool_name: 'update_payment_method', params_hash: 'b7a7897c5c0e5b1d8f2a4e6c9d3b7a5f1e8c4d2b6a0f9e7d5c3b1a9f8e6d4c2b', decision: 'DENY', latency_ms: 0.8 },
-  { created_at: '2024-10-27 14:27:41.003', agent_id: 'agt_9f8b7c6a', tool_name: 'fetch_user_billing', params_hash: 'd7a8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8', decision: 'ALLOW', latency_ms: 3.9 },
-  { created_at: '2024-10-27 14:26:12.890', agent_id: 'agt_7k3m1n8q', tool_name: 'mutate_admin_roles', params_hash: '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b', decision: 'DENY', latency_ms: 1.1 },
-];
+  if (response.status === 401) {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('user_sub');
+      localStorage.removeItem('user_org');
+      window.location.href = '/login';
+    }
+    throw new Error('Unauthorized');
+  }
 
-let MOCK_CONFIG: AdminConfig = {
-  user_auth_mode: 'native',
-  jwks_uri: 'https://auth.agentauth.dev/.well-known/jwks.json',
-  ownership_mode: 'claims',
-};
-
-function delay(ms: number = 300): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-function generateAgentId(): string {
-  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-  let id = 'agt_';
-  for (let i = 0; i < 8; i++) id += chars[Math.floor(Math.random() * chars.length)];
-  return id;
-}
-
-function generatePrivateKey(): string {
-  const lines = [
-    'MIIEpAIBAAKCAQEA0w3Y5m7nK8pL2qR4sT6uV9wX1bZ9jK8mN2oP4qR5sT7uV9wX',
-    '3aB5cD7eF9gH1iJ3kL5mN7oP9qR1sT3uV5wX7yZ9aB1cD3eF5gH7iJ9kL1mN3oP',
-    '5qR7sT9uV1wX3yZ5aB7cD9eF1gH3iJ5kL7mN9oP1qR3sT5uV7wX9yZ1aB3cD5eF',
-    '7gH9iJ1kL3mN5oP7qR9sT1uV3wX5yZ7aB9cD1eF3gH5iJ7kL9mN1oP3qR5sT7u',
-  ];
-  return `-----BEGIN RSA PRIVATE KEY-----\n${lines.join('\n')}\n-----END RSA PRIVATE KEY-----`;
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(data.detail || 'API request failed');
+  }
+  return data;
 }
 
 export const api = {
+  async login(email: string, password: string): Promise<any> {
+    const res = await apiFetch('/v1/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ email, password })
+    });
+    if (typeof window !== 'undefined' && res.access_token) {
+      localStorage.setItem('access_token', res.access_token);
+      localStorage.setItem('user_sub', res.user_sub);
+      
+      // Fetch me to get org_id
+      try {
+        const meRes = await fetch(`${BASE_URL}/v1/auth/me`, {
+          headers: { 'Authorization': `Bearer ${res.access_token}` }
+        });
+        if (meRes.ok) {
+          const meData = await meRes.json();
+          localStorage.setItem('user_org', meData.org_id);
+        }
+      } catch (err) {
+        console.error("Failed to fetch org on login:", err);
+      }
+    }
+    return res;
+  },
+
+  async register(email: string, password: string, orgId: string): Promise<any> {
+    return await apiFetch('/v1/auth/register', {
+      method: 'POST',
+      body: JSON.stringify({ email, password, org_id: orgId })
+    });
+  },
+
   async getAuditSummary(): Promise<AuditSummary> {
-    await delay();
-    return { active_agents: 1248, gateway_latency_ms: 4.2, threats_blocked_24h: 842 };
+    try {
+      const summary = await apiFetch('/v1/audit/summary');
+      const agents = await this.getAgents();
+      return {
+        active_agents: agents.filter(a => a.is_active).length,
+        gateway_latency_ms: parseFloat(summary.avg_latency_ms?.toFixed(1)) || 0,
+        threats_blocked_24h: summary.denied_calls || 0,
+      };
+    } catch {
+      return { active_agents: 0, gateway_latency_ms: 0, threats_blocked_24h: 0 };
+    }
   },
 
   async getAgents(): Promise<Agent[]> {
-    await delay();
-    return [...MOCK_AGENTS];
+    try {
+      const res = await apiFetch('/v1/agents');
+      return res.map((a: any) => ({
+        agent_id: a.agent_id,
+        name: a.name,
+        is_active: a.is_active,
+        created_at: a.created_at,
+      }));
+    } catch {
+      return [];
+    }
   },
 
   async registerAgent(name: string): Promise<{ agent: Agent; private_key: string }> {
-    await delay(500);
-    const agent: Agent = {
-      agent_id: generateAgentId(),
-      name,
-      is_active: true,
-      created_at: new Date().toISOString(),
+    const orgId = typeof window !== 'undefined' ? localStorage.getItem('user_org') : null;
+    const res = await apiFetch('/v1/agents', {
+      method: 'POST',
+      body: JSON.stringify({
+        name,
+        org_id: orgId || 'org_acme',
+        description: 'Next.js Console Agent',
+        metadata_: {}
+      })
+    });
+    return {
+      agent: {
+        agent_id: res.agent_id,
+        name: res.name,
+        is_active: true,
+        created_at: res.created_at,
+      },
+      private_key: res.private_key,
     };
-    MOCK_AGENTS.unshift(agent);
-    return { agent, private_key: generatePrivateKey() };
   },
 
   async revokeAgentTokens(agentId: string): Promise<{ success: boolean }> {
-    await delay(300);
-    const agent = MOCK_AGENTS.find(a => a.agent_id === agentId);
-    if (agent) agent.is_active = false;
+    // Calling both API revocation and deactivation in DB
+    await apiFetch(`/v1/agents/${agentId}/revoke`, { method: 'POST' });
+    await apiFetch(`/v1/agents/${agentId}`, { method: 'DELETE' });
     return { success: true };
   },
 
   async getScopes(): Promise<Scope[]> {
-    await delay();
-    return [...MOCK_SCOPES];
+    try {
+      const res = await apiFetch('/v1/scopes');
+      return res.map((s: any) => ({
+        scope_id: s.scope_id,
+        name: s.name,
+        description: s.description || '',
+      }));
+    } catch {
+      return [];
+    }
   },
 
   async getRoles(): Promise<Role[]> {
-    await delay();
-    return [...MOCK_ROLES];
+    try {
+      const res = await apiFetch('/v1/roles');
+      const rolesWithScopes = await Promise.all(
+        res.map(async (r: any) => {
+          try {
+            const roleDetail = await apiFetch(`/v1/roles/${r.role_id}`);
+            return {
+              role_id: r.role_id,
+              name: r.name,
+              description: r.description || '',
+              scopes: roleDetail.scopes?.map((s: any) => s.name) || [],
+            };
+          } catch {
+            return {
+              role_id: r.role_id,
+              name: r.name,
+              description: r.description || '',
+              scopes: [],
+            };
+          }
+        })
+      );
+      return rolesWithScopes;
+    } catch {
+      return [];
+    }
   },
 
   async getRoleScopes(roleId: string): Promise<string[]> {
-    await delay();
-    const role = MOCK_ROLES.find(r => r.role_id === roleId);
-    return role ? [...role.scopes] : [];
+    try {
+      const res = await apiFetch(`/v1/roles/${roleId}`);
+      return res.scopes?.map((s: any) => s.name) || [];
+    } catch {
+      return [];
+    }
   },
 
   async getAuditLogs(): Promise<AuditLogEntry[]> {
-    await delay();
-    return [...MOCK_AUDIT_LOGS];
+    try {
+      const res = await apiFetch('/v1/audit/logs');
+      return res.map((log: any) => ({
+        id: log.log_id || log.id || '',
+        created_at: new Date(log.created_at).toLocaleString(),
+        agent_id: log.agent_id || '',
+        tool_name: log.tool_name || '',
+        params_hash: log.params_hash || '',
+        decision: log.decision,
+        latency_ms: log.latency_ms,
+      }));
+    } catch {
+      return [];
+    }
   },
 
   async getAdminConfig(): Promise<AdminConfig> {
-    await delay();
-    return { ...MOCK_CONFIG };
+    try {
+      const res = await apiFetch('/v1/admin/config');
+      return {
+        user_auth_mode: res.user_auth_mode || 'native',
+        jwks_uri: res.jwks_uri || '',
+        ownership_mode: res.ownership_mode || 'claims',
+      };
+    } catch {
+      return {
+        user_auth_mode: 'native',
+        jwks_uri: '',
+        ownership_mode: 'claims',
+      };
+    }
   },
 
   async updateAdminConfig(config: Partial<AdminConfig>): Promise<AdminConfig> {
-    await delay(400);
-    MOCK_CONFIG = { ...MOCK_CONFIG, ...config };
-    return { ...MOCK_CONFIG };
+    if (config.user_auth_mode !== undefined) {
+      await apiFetch('/v1/admin/config/auth', {
+        method: 'PUT',
+        body: JSON.stringify({
+          user_auth_mode: config.user_auth_mode,
+          jwks_uri: config.jwks_uri || ''
+        })
+      });
+    }
+    if (config.ownership_mode !== undefined) {
+      await apiFetch('/v1/admin/config/ownership', {
+        method: 'PUT',
+        body: JSON.stringify({
+          ownership_mode: config.ownership_mode,
+          assertion_url: '',
+        })
+      });
+    }
+    return this.getAdminConfig();
   },
 };
