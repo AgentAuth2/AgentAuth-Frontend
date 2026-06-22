@@ -25,6 +25,7 @@ export interface AuditLogEntry {
   tool_name: string;
   params_hash: string;
   decision: 'ALLOW' | 'DENY';
+  deny_reason: string;
   latency_ms: number;
 }
 
@@ -219,9 +220,10 @@ export const api = {
     }
   },
 
-  async getAuditLogs(): Promise<AuditLogEntry[]> {
+  async getAuditLogs(agentId?: string): Promise<AuditLogEntry[]> {
     try {
-      const res = await apiFetch('/v1/audit/logs');
+      const url = agentId ? `/v1/audit/logs?agent_id=${agentId}` : '/v1/audit/logs';
+      const res = await apiFetch(url);
       return res.map((log: any) => ({
         id: log.log_id || log.id || '',
         created_at: new Date(log.created_at).toLocaleString(),
@@ -229,6 +231,7 @@ export const api = {
         tool_name: log.tool_name || '',
         params_hash: log.params_hash || '',
         decision: log.decision,
+        deny_reason: log.deny_reason || '',
         latency_ms: log.latency_ms,
       }));
     } catch {

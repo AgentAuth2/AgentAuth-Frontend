@@ -5,18 +5,18 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   Shield, LayoutDashboard, Cpu, Lock, ScrollText,
-  Settings, HelpCircle, FileText, Menu, X, Plus, User, LogOut, Terminal, Heart, Building
+  Settings, HelpCircle, FileText, Menu, X, Plus, User, LogOut, Terminal, Heart, Building, FileSearch
 } from 'lucide-react';
 import { RegisterAgentModal } from '@/components/dashboard/register-agent-modal';
 
 const NAV_ITEMS = [
   { href: '/dashboard', label: 'Gateway Overview', icon: LayoutDashboard },
+  { href: '/dashboard/analyzer', label: 'Code Analyzer', icon: FileSearch },
   { href: '/dashboard/agents', label: 'Agent Registry', icon: Cpu },
   { href: '/dashboard/scopes', label: 'Role & Scope Engine', icon: Lock },
   { href: '/dashboard/gateway/console', label: 'Test Console', icon: Terminal },
   { href: '/dashboard/audit', label: 'Audit Logs', icon: ScrollText },
   { href: '/dashboard/health', label: 'System Health', icon: Heart },
-  { href: '/dashboard/admin/orgs', label: 'Tenants Directory', icon: Building },
   { href: '/dashboard/settings', label: 'Admin Config', icon: Settings },
 ];
 

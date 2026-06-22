@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Shield, ArrowLeft, Lock, RefreshCw, KeyRound, LogOut } from 'lucide-react';
-import { api } from '@/lib/mock-api';
+import { api } from '@/lib/api';
 
 interface UserData {
   user_id: string;

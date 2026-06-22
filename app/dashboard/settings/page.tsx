@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { api, AdminConfig } from '@/lib/mock-api';
+import { api, AdminConfig } from '@/lib/api';
 import { Settings, Save, CheckCircle } from 'lucide-react';
 
 export default function AdminSettingsPage() {

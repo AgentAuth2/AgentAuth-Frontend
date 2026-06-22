@@ -17,9 +17,9 @@ interface AuditLog {
   created_at: string;
 }
 
-export default function AuditLogDetailPage({ params }: { params: Promise<{ log_id: string }> }) {
+export default function AuditLogDetailPage({ params }: { params: { log_id: string } }) {
   const router = useRouter();
-  const { log_id } = use(params);
+  const { log_id } = params;
 
   const [log, setLog] = useState<AuditLog | null>(null);
   const [loading, setLoading] = useState(true);

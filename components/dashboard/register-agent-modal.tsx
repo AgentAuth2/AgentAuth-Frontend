@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { api, Agent } from '@/lib/mock-api';
+import { api, Agent } from '@/lib/api';
 import { CheckCircle, AlertTriangle, Copy, X } from 'lucide-react';
 
 interface RegisterAgentModalProps {

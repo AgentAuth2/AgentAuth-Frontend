@@ -4,7 +4,7 @@ import { useEffect, useState, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Cpu, Shield, Lock, ScrollText, Ban, Trash2, Plus, X, CheckCircle, RefreshCw } from 'lucide-react';
-import { api, Agent } from '@/lib/mock-api';
+import { api, Agent } from '@/lib/api';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
 interface RoleResponse {
@@ -20,10 +20,9 @@ interface AuditLogResponse {
   created_at: string;
 }
 
-export default function AgentDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default function AgentDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const { id } = use(params);
-
+  const { id } = params;
   const [agent, setAgent] = useState<Agent | null>(null);
   const [roles, setRoles] = useState<RoleResponse[]>([]);
   const [scopes, setScopes] = useState<string[]>([]);
@@ -215,11 +214,10 @@ export default function AgentDetailPage({ params }: { params: Promise<{ id: stri
           </Link>
           <div className="flex items-center gap-xs">
             <h2 className="text-headline-lg font-headline-lg text-on-surface">{agent.name}</h2>
-            <span className={`inline-flex items-center gap-xs px-2 py-0.5 rounded text-label-caps font-label-caps border ${
-              agent.is_active
+            <span className={`inline-flex items-center gap-xs px-2 py-0.5 rounded text-label-caps font-label-caps border ${agent.is_active
                 ? 'bg-[rgba(42,229,0,0.1)] text-secondary-fixed-dim border-secondary-fixed-dim'
                 : 'bg-[rgba(255,180,171,0.1)] text-error border-error'
-            }`}>
+              }`}>
               {agent.is_active ? 'ACTIVE' : 'REVOKED'}
             </span>
           </div>
@@ -258,7 +256,7 @@ export default function AgentDetailPage({ params }: { params: Promise<{ id: stri
 
       {/* Grid Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-md">
-        
+
         {/* Left column: Roles and Scopes */}
         <div className="lg:col-span-2 space-y-md">
           {/* Roles section */}
@@ -347,11 +345,10 @@ export default function AgentDetailPage({ params }: { params: Promise<{ id: stri
                 <div key={index} className="p-sm hover:bg-row-hover transition-colors text-body-sm">
                   <div className="flex justify-between items-start mb-xs">
                     <span className="font-code font-bold text-on-surface truncate max-w-[120px]">{log.tool_name}</span>
-                    <span className={`inline-flex px-2 py-0.5 rounded text-label-caps font-label-caps border ${
-                      log.decision === 'ALLOW'
+                    <span className={`inline-flex px-2 py-0.5 rounded text-label-caps font-label-caps border ${log.decision === 'ALLOW'
                         ? 'bg-[rgba(42,229,0,0.1)] text-secondary-fixed-dim border-secondary-fixed-dim'
                         : 'bg-[rgba(255,180,171,0.1)] text-error border-error'
-                    }`}>
+                      }`}>
                       {log.decision}
                     </span>
                   </div>

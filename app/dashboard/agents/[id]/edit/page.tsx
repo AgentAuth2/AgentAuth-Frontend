@@ -4,11 +4,11 @@ import { useEffect, useState, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, RefreshCw } from 'lucide-react';
-import { api, Agent } from '@/lib/mock-api';
+import { api, Agent } from '@/lib/api';
 
-export default function EditAgentPage({ params }: { params: Promise<{ id: string }> }) {
+export default function EditAgentPage({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const { id } = use(params);
+  const { id } = params;
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');

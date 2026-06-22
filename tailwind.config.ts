@@ -119,8 +119,8 @@ const config: Config = {
           '50%': { boxShadow: '0 0 16px rgba(0, 229, 255, 0.6)' },
         },
         'flow-anim': {
-          '0%': { backgroundPosition: '100% 0' },
-          '100%': { backgroundPosition: '-100% 0' },
+          '0%': { backgroundPosition: '-100% 0' },
+          '100%': { backgroundPosition: '200% 0' },
         },
         'float-up': {
           '0%': { opacity: '0', transform: 'translateY(20px)' },

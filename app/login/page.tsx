@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Shield, ArrowRight, Lock, Mail } from 'lucide-react';
-import { api } from '@/lib/mock-api';
+import { api } from '@/lib/api';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -104,7 +104,7 @@ export default function LoginPage() {
         </form>
 
         <div className="mt-md pt-sm border-t border-panel-border text-center text-body-sm font-body-sm text-on-surface-variant">
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '}
           <Link href="/register" className="text-primary-container hover:text-primary-fixed-dim transition-colors font-medium">
             Sign up
           </Link>

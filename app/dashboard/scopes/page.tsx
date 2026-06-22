@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { api, Scope, Role } from '@/lib/mock-api';
+import { api, Scope, Role } from '@/lib/api';
 import { Lock, Shield, ChevronRight, Plus } from 'lucide-react';
 
 export default function ScopesPage() {

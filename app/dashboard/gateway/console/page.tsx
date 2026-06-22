@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Shield, Play, FlaskConical, Terminal, Activity, Zap, RefreshCw, CheckCircle, X } from 'lucide-react';
-import { api } from '@/lib/mock-api';
+import { api } from '@/lib/api';
 
 export default function GatewayConsolePage() {
   const [agentToken, setAgentToken] = useState('');
@@ -46,8 +46,8 @@ export default function GatewayConsolePage() {
       'Content-Type': 'application/json'
     };
 
-    const aToken = agentToken.trim();
-    const uToken = userToken.trim();
+    const aToken = agentToken.trim().replace(/[\r\n]+/g, '');
+    const uToken = userToken.trim().replace(/[\r\n]+/g, '');
 
     if (aToken) {
       headers['Authorization'] = aToken.startsWith('Bearer ') ? aToken : `Bearer ${aToken}`;

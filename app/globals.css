@@ -24,8 +24,9 @@
 
 @layer utilities {
   .flow-line {
-    background: linear-gradient(90deg, #00e5ff 0%, rgba(0, 229, 255, 0.2) 100%);
-    background-size: 200% 100%;
+    background: linear-gradient(90deg, transparent 0%, rgba(0, 229, 255, 0.8) 50%, transparent 100%);
+    background-size: 50% 100%;
+    background-repeat: no-repeat;
     animation: flow-anim 2s linear infinite;
   }
 

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, CheckCircle, AlertTriangle, Copy, Cpu } from 'lucide-react';
-import { api, Agent } from '@/lib/mock-api';
+import { api, Agent } from '@/lib/api';
 
 export default function NewAgentPage() {
   const router = useRouter();

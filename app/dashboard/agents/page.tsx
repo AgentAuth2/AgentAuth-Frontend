@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { api, Agent } from '@/lib/mock-api';
+import { api, Agent } from '@/lib/api';
 import { RegisterAgentModal } from '@/components/dashboard/register-agent-modal';
 import { Cpu, Plus, Ban, CheckCircle, XCircle, RefreshCw } from 'lucide-react';
 

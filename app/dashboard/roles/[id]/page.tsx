@@ -24,9 +24,9 @@ interface RoleDetail {
   scopes: ScopeResponse[];
 }
 
-export default function RoleDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default function RoleDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const { id } = use(params);
+  const { id } = params;
 
   const [role, setRole] = useState<RoleDetail | null>(null);
   const [agents, setAgents] = useState<AgentResponse[]>([]);
