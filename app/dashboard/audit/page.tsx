@@ -49,7 +49,7 @@ export default function AuditLogsPage() {
         </div>
         <div className="flex items-center gap-sm">
           <button
-            onClick={loadLogs}
+            onClick={() => loadLogs(selectedAgentId)}
             className="flex items-center gap-xs text-label-caps font-label-caps text-on-surface-variant hover:text-on-surface transition-colors px-sm py-xs"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
