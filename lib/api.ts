@@ -68,7 +68,9 @@ async function apiFetch(url: string, options: RequestInit = {}) {
       localStorage.removeItem('access_token');
       localStorage.removeItem('user_sub');
       localStorage.removeItem('user_org');
-      window.location.href = '/login';
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
     }
     throw new Error('Unauthorized');
   }
