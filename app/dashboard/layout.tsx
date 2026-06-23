@@ -35,9 +35,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       return;
     }
 
-    const BASE_URL = typeof window !== 'undefined' && window.location.hostname !== 'localhost'
-      ? `https://${window.location.host.replace('3000', '8000')}`
-      : 'http://localhost:8000';
+    const BASE_URL = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && window.location.hostname !== 'localhost'
+    ? 'https://agentauthbackend.onrender.com'
+    : 'http://localhost:8000');
 
     fetch(`${BASE_URL}/v1/auth/me`, {
       headers: { 'Authorization': `Bearer ${token}` }
@@ -60,9 +60,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const handleLogout = () => {
     const token = localStorage.getItem('access_token');
-    const BASE_URL = typeof window !== 'undefined' && window.location.hostname !== 'localhost'
-      ? `https://${window.location.host.replace('3000', '8000')}`
-      : 'http://localhost:8000';
+    const BASE_URL = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && window.location.hostname !== 'localhost'
+    ? 'https://agentauthbackend.onrender.com'
+    : 'http://localhost:8000');
 
     fetch(`${BASE_URL}/v1/auth/logout`, {
       method: 'POST',

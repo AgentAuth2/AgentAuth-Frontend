@@ -12,9 +12,9 @@ export default function NewScopePage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const BASE_URL = typeof window !== 'undefined' && window.location.hostname !== 'localhost'
-    ? `https://${window.location.host.replace('3000', '8000')}`
-    : 'http://localhost:8000';
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && window.location.hostname !== 'localhost'
+    ? 'https://agentauthbackend.onrender.com'
+    : 'http://localhost:8000');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

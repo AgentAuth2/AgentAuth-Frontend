@@ -33,9 +33,9 @@ export default function ProfilePage() {
         return;
       }
       
-      const BASE_URL = typeof window !== 'undefined' && window.location.hostname !== 'localhost'
-        ? `https://${window.location.host.replace('3000', '8000')}`
-        : 'http://localhost:8000';
+      const BASE_URL = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && window.location.hostname !== 'localhost'
+    ? 'https://agentauthbackend.onrender.com'
+    : 'http://localhost:8000');
 
       const res = await fetch(`${BASE_URL}/v1/auth/me`, {
         headers: { 'Authorization': `Bearer ${token}` }
@@ -81,9 +81,9 @@ export default function ProfilePage() {
 
     try {
       const token = localStorage.getItem('access_token');
-      const BASE_URL = typeof window !== 'undefined' && window.location.hostname !== 'localhost'
-        ? `https://${window.location.host.replace('3000', '8000')}`
-        : 'http://localhost:8000';
+      const BASE_URL = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && window.location.hostname !== 'localhost'
+    ? 'https://agentauthbackend.onrender.com'
+    : 'http://localhost:8000');
 
       const res = await fetch(`${BASE_URL}/v1/auth/password/change`, {
         method: 'POST',
@@ -115,9 +115,9 @@ export default function ProfilePage() {
 
   const handleLogout = async () => {
     const token = localStorage.getItem('access_token');
-    const BASE_URL = typeof window !== 'undefined' && window.location.hostname !== 'localhost'
-      ? `https://${window.location.host.replace('3000', '8000')}`
-      : 'http://localhost:8000';
+    const BASE_URL = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && window.location.hostname !== 'localhost'
+    ? 'https://agentauthbackend.onrender.com'
+    : 'http://localhost:8000');
 
     try {
       await fetch(`${BASE_URL}/v1/auth/logout`, {
