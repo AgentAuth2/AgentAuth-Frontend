@@ -60,21 +60,21 @@ return (
     <section className="grid grid-cols-1 md:grid-cols-3 gap-md mb-lg">
       <MetricCard
         label="Active Agents"
-        value={summary!.active_agents.toLocaleString()}
+        value={summary?.active_agents?.toLocaleString() ?? '0'}
         sublabel="+12% from last week"
         icon={<Cpu className="w-5 h-5" />}
         trend="up"
       />
       <MetricCard
         label="Gateway Latency (<10ms)"
-        value={`${summary!.gateway_latency_ms}ms`}
+        value={`${summary?.gateway_latency_ms ?? 0}ms`}
         sublabel="P99 under 15ms"
         icon={<Zap className="w-5 h-5" />}
         trend="stable"
       />
       <MetricCard
         label="Threats Blocked (24h)"
-        value={summary!.threats_blocked_24h.toLocaleString()}
+        value={summary?.threats_blocked_24h?.toLocaleString() ?? '0'}
         sublabel="-5% incident rate"
         icon={<Shield className="w-5 h-5" />}
         trend="down"

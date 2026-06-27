@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState, use } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, ScrollText, ShieldAlert, ShieldCheck, HelpCircle, RefreshCw } from 'lucide-react';
+import { BASE_URL } from '@/lib/api';
 
 interface AuditLog {
   log_id: string;
@@ -25,9 +26,7 @@ export default function AuditLogDetailPage({ params }: { params: { log_id: strin
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && window.location.hostname !== 'localhost'
-    ? 'https://agentauthbackend.onrender.com'
-    : 'http://localhost:8000');
+
 
   useEffect(() => {
     const loadLog = async () => {

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Shield, ArrowLeft, Lock, RefreshCw, KeyRound, LogOut } from 'lucide-react';
-import { api } from '@/lib/api';
+import { api, BASE_URL } from '@/lib/api';
 
 interface UserData {
   user_id: string;
@@ -33,9 +33,7 @@ export default function ProfilePage() {
         return;
       }
       
-      const BASE_URL = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && window.location.hostname !== 'localhost'
-    ? 'https://agentauthbackend.onrender.com'
-    : 'http://localhost:8000');
+
 
       const res = await fetch(`${BASE_URL}/v1/auth/me`, {
         headers: { 'Authorization': `Bearer ${token}` }
@@ -81,9 +79,7 @@ export default function ProfilePage() {
 
     try {
       const token = localStorage.getItem('access_token');
-      const BASE_URL = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && window.location.hostname !== 'localhost'
-    ? 'https://agentauthbackend.onrender.com'
-    : 'http://localhost:8000');
+
 
       const res = await fetch(`${BASE_URL}/v1/auth/password/change`, {
         method: 'POST',
@@ -115,9 +111,7 @@ export default function ProfilePage() {
 
   const handleLogout = async () => {
     const token = localStorage.getItem('access_token');
-    const BASE_URL = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && window.location.hostname !== 'localhost'
-    ? 'https://agentauthbackend.onrender.com'
-    : 'http://localhost:8000');
+
 
     try {
       await fetch(`${BASE_URL}/v1/auth/logout`, {

@@ -9,6 +9,7 @@ export default function AdminSettingsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     api.getAdminConfig().then(c => {
@@ -20,10 +21,16 @@ export default function AdminSettingsPage() {
   const handleSave = async () => {
     if (!config) return;
     setSaving(true);
-    await api.updateAdminConfig(config);
-    setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    setError(null);
+    try {
+      await api.updateAdminConfig(config);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } catch (err: any) {
+      setError(err.message || "Failed to save configuration settings.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   if (loading || !config) return <Loading />;
@@ -48,6 +55,12 @@ export default function AdminSettingsPage() {
           {saved ? 'Saved' : saving ? 'Saving...' : 'Save Changes'}
         </button>
       </header>
+
+      {error && (
+        <div className="mb-sm bg-error-container/20 border border-error-container/30 text-error p-sm rounded-lg text-body-sm font-body-sm max-w-2xl">
+          {error}
+        </div>
+      )}
 
       <div className="max-w-2xl space-y-md">
         {/* User Auth Mode */}

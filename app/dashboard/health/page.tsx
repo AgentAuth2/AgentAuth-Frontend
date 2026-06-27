@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Heart, Activity, CheckCircle2, AlertTriangle, RefreshCw, Server, Database, ShieldAlert } from 'lucide-react';
+import { BASE_URL } from '@/lib/api';
 
 interface HealthStatus {
   status: string;
@@ -22,9 +23,7 @@ export default function HealthPage() {
   const [loading, setLoading] = useState(true);
   const [pollingCount, setPollingCount] = useState(0);
 
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && window.location.hostname !== 'localhost'
-    ? 'https://agentauthbackend.onrender.com'
-    : 'http://localhost:8000');
+
 
   const loadHealthData = async () => {
     try {

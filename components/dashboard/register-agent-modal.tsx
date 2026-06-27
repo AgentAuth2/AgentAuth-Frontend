@@ -15,14 +15,18 @@ export function RegisterAgentModal({ open, onClose }: RegisterAgentModalProps) {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<{ agent: Agent; private_key: string } | null>(null);
   const [copied, setCopied] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
     setLoading(true);
+    setError(null);
     try {
       const res = await api.registerAgent(name.trim());
       setResult(res);
+    } catch (err: any) {
+      setError(err.message || 'Registration failed. The agent name may already exist.');
     } finally {
       setLoading(false);
     }
@@ -43,6 +47,7 @@ export function RegisterAgentModal({ open, onClose }: RegisterAgentModalProps) {
     setResult(null);
     setName('');
     setCopied(false);
+    setError(null);
     onClose();
   };
 
@@ -61,6 +66,11 @@ export function RegisterAgentModal({ open, onClose }: RegisterAgentModalProps) {
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="p-md pt-0">
+              {error && (
+                <div className="mb-sm bg-error-container/20 border border-error-container/30 text-error p-sm rounded-lg text-body-sm font-body-sm flex gap-xs items-center">
+                  <span>{error}</span>
+                </div>
+              )}
               <div className="mb-sm">
                 <label className="text-label-md font-label-md text-on-surface-variant mb-xs block">Agent Name</label>
                 <input

@@ -8,6 +8,7 @@ import {
   Settings, HelpCircle, FileText, Menu, X, Plus, User, LogOut, Terminal, Heart, Building, FileSearch
 } from 'lucide-react';
 import { RegisterAgentModal } from '@/components/dashboard/register-agent-modal';
+import { BASE_URL } from '@/lib/api';
 
 const NAV_ITEMS = [
   { href: '/dashboard', label: 'Gateway Overview', icon: LayoutDashboard },
@@ -35,10 +36,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       return;
     }
 
-    const BASE_URL = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && window.location.hostname !== 'localhost'
-    ? 'https://agentauthbackend.onrender.com'
-    : 'http://localhost:8000');
-
     fetch(`${BASE_URL}/v1/auth/me`, {
       headers: { 'Authorization': `Bearer ${token}` }
     })
@@ -60,10 +57,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const handleLogout = () => {
     const token = localStorage.getItem('access_token');
-    const BASE_URL = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && window.location.hostname !== 'localhost'
-    ? 'https://agentauthbackend.onrender.com'
-    : 'http://localhost:8000');
-
     fetch(`${BASE_URL}/v1/auth/logout`, {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${token}` }

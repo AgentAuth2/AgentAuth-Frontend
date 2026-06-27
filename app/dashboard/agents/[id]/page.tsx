@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState, use } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Cpu, Shield, Lock, ScrollText, Ban, Trash2, Plus, X, CheckCircle, RefreshCw } from 'lucide-react';
-import { api, Agent } from '@/lib/api';
+import { api, Agent, BASE_URL } from '@/lib/api';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
 interface RoleResponse {
@@ -37,9 +37,7 @@ export default function AgentDetailPage({ params }: { params: { id: string } }) 
   const [revoking, setRevoking] = useState(false);
   const [deactivating, setDeactivating] = useState(false);
 
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && window.location.hostname !== 'localhost'
-    ? 'https://agentauthbackend.onrender.com'
-    : 'http://localhost:8000');
+
 
   const loadAgentData = async () => {
     setLoading(true);

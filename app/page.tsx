@@ -1,9 +1,18 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Shield, Zap, Fingerprint, Lock, ArrowRight, Cpu } from 'lucide-react';
 
 export default function LandingPage() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsLoggedIn(!!localStorage.getItem('access_token'));
+    }
+  }, []);
+
   return (
     <div className="min-h-screen bg-background relative">
       <div className="absolute inset-0 dot-grid opacity-20 pointer-events-none" />
@@ -20,13 +29,31 @@ export default function LandingPage() {
           <Link href="/contact" className="hidden sm:flex items-center gap-xs text-label-caps font-label-caps text-on-surface-variant hover:text-on-surface transition-colors">
             Documentation
           </Link>
-          <Link
-            href="/contact"
-            className="bg-primary-container text-on-primary font-body-sm text-body-sm font-semibold px-lg py-2 rounded-lg hover:bg-primary-fixed-dim transition-colors flex items-center gap-xs"
-          >
-            Book Demo
-            <ArrowRight className="w-4 h-4" />
-          </Link>
+          {isLoggedIn ? (
+            <Link
+              href="/dashboard"
+              className="bg-primary-container text-on-primary font-body-sm text-body-sm font-semibold px-lg py-2 rounded-lg hover:bg-primary-fixed-dim transition-colors flex items-center gap-xs"
+            >
+              Dashboard
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="text-label-caps font-label-caps text-on-surface-variant hover:text-on-surface transition-colors px-sm"
+              >
+                Sign In
+              </Link>
+              <Link
+                href="/register"
+                className="bg-primary-container text-on-primary font-body-sm text-body-sm font-semibold px-lg py-2 rounded-lg hover:bg-primary-fixed-dim transition-colors flex items-center gap-xs"
+              >
+                Sign Up
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </>
+          )}
         </div>
       </nav>
 

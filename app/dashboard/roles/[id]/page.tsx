@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState, use } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Shield, Lock, Cpu, Trash2, Plus, RefreshCw } from 'lucide-react';
+import { BASE_URL } from '@/lib/api';
 
 interface ScopeResponse {
   scope_id: string;
@@ -36,9 +37,7 @@ export default function RoleDetailPage({ params }: { params: { id: string } }) {
   const [selectedScopeId, setSelectedScopeId] = useState('');
   const [addingScope, setAddingScope] = useState(false);
 
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && window.location.hostname !== 'localhost'
-    ? 'https://agentauthbackend.onrender.com'
-    : 'http://localhost:8000');
+
 
   const loadRoleData = async () => {
     try {

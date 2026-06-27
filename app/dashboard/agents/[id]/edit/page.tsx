@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState, use } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, RefreshCw } from 'lucide-react';
-import { api, Agent } from '@/lib/api';
+import { api, Agent, BASE_URL } from '@/lib/api';
 
 export default function EditAgentPage({ params }: { params: { id: string } }) {
   const router = useRouter();
@@ -17,9 +17,7 @@ export default function EditAgentPage({ params }: { params: { id: string } }) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && window.location.hostname !== 'localhost'
-    ? 'https://agentauthbackend.onrender.com'
-    : 'http://localhost:8000');
+
 
   useEffect(() => {
     const loadAgent = async () => {

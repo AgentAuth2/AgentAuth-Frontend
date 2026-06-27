@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Shield, Play, FlaskConical, Terminal, Activity, Zap, RefreshCw, CheckCircle, X } from 'lucide-react';
-import { api } from '@/lib/api';
+import { api, BASE_URL } from '@/lib/api';
 
 export default function GatewayConsolePage() {
   const [agentToken, setAgentToken] = useState('');
@@ -16,9 +16,7 @@ export default function GatewayConsolePage() {
   const [resultData, setResultData] = useState<any>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && window.location.hostname !== 'localhost'
-    ? 'https://agentauthbackend.onrender.com'
-    : 'http://localhost:8000');
+
 
   useEffect(() => {
     const localToken = localStorage.getItem('access_token');

@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Upload, FileArchive, Search, CheckCircle2, ChevronRight, XCircle, TerminalSquare, RefreshCcw } from 'lucide-react';
 import { toast } from 'sonner';
+import { BASE_URL } from '@/lib/api';
 
 import {
   AnalysisJobResponse,
@@ -35,11 +36,7 @@ export default function AnalyzerPage() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const getBaseUrl = () => {
-    return typeof window !== 'undefined' && window.location.hostname !== 'localhost'
-      ? `https://${window.location.host.replace('3000', '8000')}`
-      : 'http://localhost:8000';
-  };
+  const getBaseUrl = () => BASE_URL;
 
   const getAuthHeaders = () => {
     const token = localStorage.getItem('access_token');

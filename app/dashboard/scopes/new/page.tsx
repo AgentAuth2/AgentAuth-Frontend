@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Lock } from 'lucide-react';
+import { BASE_URL } from '@/lib/api';
 
 export default function NewScopePage() {
   const router = useRouter();
@@ -12,9 +13,7 @@ export default function NewScopePage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && window.location.hostname !== 'localhost'
-    ? 'https://agentauthbackend.onrender.com'
-    : 'http://localhost:8000');
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
