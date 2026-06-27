@@ -5,7 +5,7 @@ const dir = process.argv[2];
 
 const searchStr = /const BASE_URL = typeof window !== 'undefined' && window\.location\.hostname !== 'localhost'\s*\?\s*`https:\/\/\$\{window\.location\.host\.replace\('3000',\s*'8000'\)\}`\s*:\s*'http:\/\/localhost:8000';/g;
 const replacement = `const BASE_URL = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && window.location.hostname !== 'localhost'
-    ? 'https://agentauthbackend.onrender.com'
+    ? 'https://agentauthbackend.onrender.com/api'
     : 'http://localhost:8000');`;
 
 function walk(directory) {
